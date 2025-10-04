@@ -10,6 +10,7 @@ const myAnimeList = [
 	30831, //konosuba
 	51705, // a galaxy next door
 	29803, // overlord
+	37105, // Grand blue
 ];
 
 /* ==================== Normalisation du titre ==================== */
