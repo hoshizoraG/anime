@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma Watchlist</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="icon" href="../images/logo.png" type="image/png">
+</head>
+<body>
+<header id="header">
+    <div id="logo">
+        <img src="../images/logo.png" alt="logo">
+    </div>
+    <div id="genre-menu">
+        <a href="../index.html">Tous</a>
+        <div class="dropdown">
+            <a href="#">Genre</a>
+            <div class="dropdown-content">
+                <a href="romance.html">Romance</a>
+                <a href="action.html">Action</a>
+                <a href="sport.html">Sport</a>
+                <a href="comedy.html">Comédie</a>
+                <a href="horror.html">Horreur</a>
+                <a href="ecchi.html">Ecchi</a>
+                <a href="drame.html">Drame</a>
+            </div>
+        </div>
+        <a href="recos.html">Mes recos</a>
+        <a href="#"><u>Ma Watchlist</u></a>
+        <a href="https://anime-sama.fr/" target="_blank">Pour regarder</a>
+    </div>
+</header>
+<div id="main-container">
+    <h1>Ma Watchlist</h1>
+    <h2>Voici les animes que vous avez ajoutés à votre liste :</h2>
+    <div id="watchlist-container">
+        <ul id="watchlist-items">
+            <!-- Les éléments de la watchlist seront ajoutés dynamiquement ici -->
+        </ul>
+    </div>
+    <button onclick="clearWatchlist()">Effacer la Watchlist</button>
+</div>
+<script src="../scripts/script.js"></script>
+</body>
+</html>
