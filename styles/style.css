@@ -19,6 +19,7 @@ header {
     padding: 10px 20px;
     display: flex; 
     align-items: center;
+    justify-content: space-between; /* logo/menu à gauche, search à droite */
     flex-wrap: wrap;
 }
 
@@ -53,10 +54,10 @@ header {
 
 /* ==================== SEARCH BAR ==================== */
 #search-container {
-    flex-grow: 1;
-    max-width: 500px;
-    margin: 20px auto;
-    text-align: center;
+    flex-grow: 0;           /* empêche de prendre toute la largeur */
+    max-width: 300px;       /* largeur fixe sur PC */
+    margin: 0;              /* pas de marge automatique */
+    text-align: right;      /* alignement texte à droite si besoin */
     position: relative;
 }
 
@@ -182,8 +183,7 @@ header {
     margin-bottom: 20px;
 }
 
-#anime-movie-label, 
-#anime-manga-label {
+#anime-movie-label {
     font-size: 18px;
     font-weight: bold;
     color: #ff6600;
@@ -333,6 +333,11 @@ button:hover {
         justify-content: center;
         margin-left: 0;
     }
+
+    #search-container {
+        text-align: center;
+        max-width: 250px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -359,6 +364,12 @@ button:hover {
 
     #search-bar {
         width: 95%;
+    }
+
+    #search-container {
+        margin: 20px auto;
+        text-align: center;
+        max-width: 95%;
     }
 }
 
