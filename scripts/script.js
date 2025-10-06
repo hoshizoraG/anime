@@ -1,50 +1,54 @@
 /* ==================== Liste de tes animes/mangas vus (MAL IDs) ==================== */
 const myAnimeList = [
-    41457, //86
-    57892, // failure frame
-    11061, // Hunter x Hunter (2011)
-    37450, // bunny girl senpai
-    34572, // black clover
-    1575, // code geass
-    5114,  // Fullmetal Alchemist: Brotherhood
-    1535,  // Death Note
-    16498, // Shingeki no Kyojin
-    28851, // a silent voice
-    50346, // call of the night
-    47917, // bocchi the rock
-    57181, // Blue Box (manga)
-    35507, // classroom of the elite
-    50425, // More Than a Married Couple, But Not Lovers
-    30831, // Konosuba
-    269, //bleach
-    28999, // charlotte
-    51705, // A Galaxy Next Door
-    42310, // cyberpunk edgerunners
-    4632, // bonne nuit pun pun
-    53407, // bartender
-    29803, // Overlord
-    36882, // Arifureta
-    49596, // blue lock
-    24833, // assassination classroom
-    34618, // blend S
-    56964, // criminelles fiançailles
-    52830, // cheat skill level up
-    46352, // blue period
-    44511, // chainsaw man
-    2167, // clannad
-    54112, //zom 100
-    37105, // Grand Blue
-    52308, // comment raeliana
-    889, // black lagoon
-    53300, // A Girl and Her Guard Dog
-    53393, // Tengoku Daimakyo
-    59845, // bloom
-    144034, // Akane Banashi (manga)
-    55866, // a sign of affection
-    56923, // chillin life
-    57719, // Akuyaku Reijou Tensei Ojisan
-    2, // berserk
-
+  { id: 41457, type: "anime" }, // 86
+  { id: 57892, type: "anime" }, // failure frame
+  { id: 11061, type: "anime" }, // Hunter x Hunter (2011)
+  { id: 37450, type: "anime" }, // bunny girl senpai
+  { id: 34572, type: "anime" }, // black clover
+  { id: 1575, type: "anime" }, // code geass
+  { id: 5114, type: "anime" },  // Fullmetal Alchemist: Brotherhood
+  { id: 1535, type: "anime" },  // Death Note
+  { id: 16498, type: "anime" }, // Shingeki no Kyojin
+  { id: 28851, type: "anime" }, // a silent voice
+  { id: 50346, type: "anime" }, // call of the night
+  { id: 47917, type: "anime" }, // bocchi the rock
+  { id: 57181, type: "anime" }, // Blue Box (manga)
+  { id: 35507, type: "anime" }, // classroom of the elite
+  { id: 50425, type: "anime" }, // More Than a Married Couple, But Not Lovers
+  { id: 30831, type: "anime" }, // Konosuba
+  { id: 35849, type: "anime" }, // darling in the franxx
+  { id: 269, type: "anime" },   // bleach
+  { id: 28999, type: "anime" }, // charlotte
+  { id: 51705, type: "anime" }, // A Galaxy Next Door
+  { id: 42310, type: "anime" }, // cyberpunk edgerunners
+  { id: 4632, type: "anime" },  // bonne nuit pun pun
+  { id: 53407, type: "anime" }, // bartender
+  { id: 28223, type: "anime" }, // death parad
+  { id: 29803, type: "anime" }, // Overlord
+  { id: 36882, type: "anime" }, // Arifureta
+  { id: 49596, type: "anime" }, // blue lock
+  { id: 57334, type: "anime" }, // dandadan
+  { id: 24833, type: "anime" }, // assassination classroom
+  { id: 34618, type: "anime" }, // blend S
+  { id: 56964, type: "anime" }, // criminelles fiançailles
+  { id: 52830, type: "anime" }, // cheat skill level up
+  { id: 46352, type: "anime" }, // blue period
+  { id: 44511, type: "anime" }, // chainsaw man
+  { id: 2167, type: "anime" },  // clannad
+  { id: 52505, type: "anime" }, // dark gathering
+  { id: 54112, type: "anime" }, // zom 100
+  { id: 37105, type: "anime" }, // Grand Blue
+  { id: 52308, type: "anime" }, // comment raeliana
+  { id: 50392, type: "anime" }, // demon slave
+  { id: 889, type: "anime" },   // black lagoon
+  { id: 53300, type: "anime" }, // A Girl and Her Guard Dog
+  { id: 53393, type: "anime" }, // Tengoku Daimakyo
+  { id: 59845, type: "anime" }, // bloom
+  { id: 144034, type: "manga" }, // Akane Banashi (manga)
+  { id: 55866, type: "anime" }, // a sign of affection
+  { id: 56923, type: "anime" }, // chillin life
+  { id: 57719, type: "anime" }, // Akuyaku Reijou Tensei Ojisan
+  { id: 2, type: "manga" },     // berserk
 ];
 
 /* ==================== Normalisation du titre ==================== */
@@ -57,19 +61,12 @@ function normalizeTitle(title) {
     .trim();
 }
 
-/* ==================== Fetch anime/manga avec fallback ==================== */
-async function fetchById(id) {
+/* ==================== Fetch anime/manga (sans fallback inutile) ==================== */
+async function fetchById({ id, type }) {
   try {
-    // D'abord l'anime
-    let res = await fetch(`https://api.jikan.moe/v4/anime/${id}`);
-    let data = await res.json();
-    if (data?.data) return { ...data.data, _type: "anime" };
-
-    // Sinon le manga
-    res = await fetch(`https://api.jikan.moe/v4/manga/${id}`);
-    data = await res.json();
-    if (data?.data) return { ...data.data, _type: "manga" };
-
+    const res = await fetch(`https://api.jikan.moe/v4/${type}/${id}`);
+    const data = await res.json();
+    if (data?.data) return { ...data.data, _type: type };
     return null;
   } catch (e) {
     console.error("Erreur récupération ID:", id, e);
@@ -79,11 +76,11 @@ async function fetchById(id) {
 
 /* ==================== Récupération avec cache local + chargement progressif ==================== */
 async function fetchMyAnimes(onAnimeLoaded) {
-  const cacheKey = "myAnimeCache-v2";
+  const cacheKey = "myAnimeCache-v3";
   const cached = localStorage.getItem(cacheKey);
   let cacheData = [];
 
-  // 1️⃣ Charger le cache existant s'il existe
+  // 1️⃣ Charger le cache existant
   if (cached) {
     try {
       cacheData = JSON.parse(cached);
@@ -95,19 +92,19 @@ async function fetchMyAnimes(onAnimeLoaded) {
 
   // 2️⃣ Identifier les IDs manquants
   const cachedIds = new Set(cacheData.map(a => a.mal_id));
-  const missingIds = myAnimeList.filter(id => !cachedIds.has(id));
+  const missing = myAnimeList.filter(entry => !cachedIds.has(entry.id));
 
-  if (missingIds.length === 0) return cacheData;
+  if (missing.length === 0) return cacheData;
 
-  // 3️⃣ Charger les manquants progressivement
-  for (const id of missingIds) {
-    const anime = await fetchById(id);
+  // 3️⃣ Charger progressivement
+  for (const entry of missing) {
+    const anime = await fetchById(entry);
     if (anime) {
       cacheData.push(anime);
       onAnimeLoaded(anime);
       localStorage.setItem(cacheKey, JSON.stringify(cacheData));
     }
-    await new Promise(r => setTimeout(r, 400)); // limiter la vitesse pour éviter le ban
+    await new Promise(r => setTimeout(r, 400)); // éviter le rate limit
   }
 
   return cacheData;
@@ -125,13 +122,13 @@ async function generateAnimeGallery(genreFilter = null) {
     if (grouped[key]) return; // éviter les doublons de saisons
     grouped[key] = anime;
 
-    // Filtrer par genre
+    // Filtrage par genre
     if (genreFilter) {
-      const allLabels = [
+      const labels = [
         ...(anime.genres || []).map(g => g.name.toLowerCase()),
         ...(anime.themes || []).map(t => t.name.toLowerCase())
       ];
-      if (!allLabels.includes(genreFilter.toLowerCase())) return;
+      if (!labels.includes(genreFilter.toLowerCase())) return;
     }
 
     const item = document.createElement("div");
