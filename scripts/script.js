@@ -49,210 +49,218 @@ const myAnimeList = [
 
 /* ==================== Normalisation du titre ==================== */
 function normalizeTitle(title) {
-    return title
-        .toLowerCase()
-        .replace(/\(.*?\)/g, "")
-        .replace(/season \d+/g, "")
-        .replace(/part \d+/g, "")
-        .trim();
+  return title
+    .toLowerCase()
+    .replace(/\(.*?\)/g, "")
+    .replace(/season \d+/g, "")
+    .replace(/part \d+/g, "")
+    .trim();
 }
 
-/* ==================== Récupération anime OU manga (fallback) ==================== */
+/* ==================== Fetch anime/manga avec fallback ==================== */
 async function fetchById(id) {
-    try {
-        // Essaye en tant qu'anime
-        let res = await fetch(`https://api.jikan.moe/v4/anime/${id}`);
-        let data = await res.json();
-        if (data?.data) return { ...data.data, _type: "anime" };
+  try {
+    // D'abord l'anime
+    let res = await fetch(`https://api.jikan.moe/v4/anime/${id}`);
+    let data = await res.json();
+    if (data?.data) return { ...data.data, _type: "anime" };
 
-        // Si pas trouvé → Essaye en tant que manga
-        res = await fetch(`https://api.jikan.moe/v4/manga/${id}`);
-        data = await res.json();
-        if (data?.data) return { ...data.data, _type: "manga" };
+    // Sinon le manga
+    res = await fetch(`https://api.jikan.moe/v4/manga/${id}`);
+    data = await res.json();
+    if (data?.data) return { ...data.data, _type: "manga" };
 
-        return null;
-    } catch (e) {
-        console.error("Erreur récupération ID:", id, e);
-        return null;
-    }
+    return null;
+  } catch (e) {
+    console.error("Erreur récupération ID:", id, e);
+    return null;
+  }
 }
 
-/* ==================== Récupération de la liste ==================== */
-async function fetchMyAnimes() {
+/* ==================== Récupération avec cache local + chargement progressif ==================== */
+async function fetchMyAnimes(onAnimeLoaded) {
+  const cacheKey = "myAnimeCache-v2";
+  const cached = localStorage.getItem(cacheKey);
+  let cacheData = [];
+
+  // 1️⃣ Charger le cache existant s'il existe
+  if (cached) {
     try {
-        const requests = myAnimeList.map(id => fetchById(id));
-        const results = await Promise.all(requests);
-        return results.filter(item => item !== null && item !== undefined);
-    } catch (error) {
-        console.error("Erreur récupération liste:", error);
-        return [];
+      cacheData = JSON.parse(cached);
+      cacheData.forEach(a => onAnimeLoaded(a)); // affichage immédiat
+    } catch {
+      cacheData = [];
     }
+  }
+
+  // 2️⃣ Identifier les IDs manquants
+  const cachedIds = new Set(cacheData.map(a => a.mal_id));
+  const missingIds = myAnimeList.filter(id => !cachedIds.has(id));
+
+  if (missingIds.length === 0) return cacheData;
+
+  // 3️⃣ Charger les manquants progressivement
+  for (const id of missingIds) {
+    const anime = await fetchById(id);
+    if (anime) {
+      cacheData.push(anime);
+      onAnimeLoaded(anime);
+      localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+    }
+    await new Promise(r => setTimeout(r, 400)); // limiter la vitesse pour éviter le ban
+  }
+
+  return cacheData;
 }
 
 /* ==================== Génération de la galerie ==================== */
 async function generateAnimeGallery(genreFilter = null) {
-    const carousel = document.getElementById('carousel-inner-all');
-    const animes = await fetchMyAnimes();
+  const carousel = document.getElementById("carousel-inner-all");
+  carousel.innerHTML = "<p>Chargement des animes...</p>";
 
-    if (!animes || animes.length === 0) {
-        carousel.innerHTML = "<p style='color:red'>Aucun anime/manga trouvé.</p>";
-        return;
+  const grouped = {};
+
+  function addAnimeToGallery(anime) {
+    const key = normalizeTitle(anime.title || anime.title_english || anime.title_japanese || "");
+    if (grouped[key]) return; // éviter les doublons de saisons
+    grouped[key] = anime;
+
+    // Filtrer par genre
+    if (genreFilter) {
+      const allLabels = [
+        ...(anime.genres || []).map(g => g.name.toLowerCase()),
+        ...(anime.themes || []).map(t => t.name.toLowerCase())
+      ];
+      if (!allLabels.includes(genreFilter.toLowerCase())) return;
     }
 
-    // Fusionner par titre "propre" pour éviter doublons (saisons)
-    const grouped = {};
-    animes.forEach(a => {
-        const key = normalizeTitle(a.title || a.title_english || a.title_japanese || "");
-        if (!grouped[key]) grouped[key] = a;
-    });
+    const item = document.createElement("div");
+    item.className = "anime-item";
+    item.onclick = () => showAnimeDetails(anime);
 
-    // Filtrer par genre/thème si demandé
-    const filtered = Object.values(grouped).filter(anime => {
-        if (!genreFilter) return true;
-        const allLabels = [
-            ...(anime.genres || []).map(g => g.name.toLowerCase()),
-            ...(anime.themes || []).map(t => t.name.toLowerCase())
-        ];
-        return allLabels.includes(genreFilter.toLowerCase());
-    });
+    const imgSrc = anime.images?.jpg?.image_url || anime.images?.webp?.image_url || "";
 
-    carousel.innerHTML = '';
-    if (filtered.length === 0) {
-        carousel.innerHTML = "<p style='color:red'>Aucun résultat pour ce genre.</p>";
-        return;
-    }
+    item.innerHTML = `
+      <img src="${imgSrc}" alt="${escapeHtml(anime.title || "")}">
+      <p>${escapeHtml(anime.title || "")}</p>
+      <p style="font-size:0;">${escapeHtml(anime.title_english || anime.title_japanese || "")}</p>
+    `;
+    carousel.appendChild(item);
+  }
 
-    // Créer les vignettes
-    filtered.forEach(anime => {
-        const item = document.createElement('div');
-        item.className = 'anime-item';
-        item.onclick = () => showAnimeDetails(anime);
-
-        const imgSrc = anime.images?.jpg?.image_url || anime.images?.webp?.image_url || '';
-
-        item.innerHTML = `
-            <img src="${imgSrc}" alt="${escapeHtml(anime.title || '')}">
-            <p>${escapeHtml(anime.title || '')}</p>
-            <p style="font-size: 0;">${escapeHtml(anime.title_english || anime.title_japanese || '')}</p>
-        `;
-        carousel.appendChild(item);
-    });
+  carousel.innerHTML = "";
+  await fetchMyAnimes(addAnimeToGallery);
 }
 
-/* ==================== Affichage des détails (sans episodes ni score) ==================== */
+/* ==================== Détails ==================== */
 function showAnimeDetails(anime) {
-    // Masque l'interface galerie
-    const searchContainer = document.getElementById('search-container');
-    if (searchContainer) searchContainer.style.display = 'none';
-    const header = document.getElementById('header');
-    if (header) header.style.display = 'none';
-    const carousel = document.querySelector('#carousel');
-    if (carousel) carousel.style.display = 'none';
+  document.getElementById("search-container")?.style.setProperty("display", "none");
+  document.getElementById("header")?.style.setProperty("display", "none");
+  document.querySelector("#carousel")?.style.setProperty("display", "none");
 
-    // Contenu detail
-    const imgEl = document.getElementById('anime-img');
-    if (imgEl) imgEl.src = anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || '';
+  const imgEl = document.getElementById("anime-img");
+  if (imgEl) imgEl.src = anime.images?.jpg?.large_image_url || anime.images?.jpg?.image_url || "";
 
-    document.getElementById('anime-title').innerText = anime.title || '';
-    document.getElementById('anime-synopsis').innerText = anime.synopsis || "Pas de synopsis disponible";
+  document.getElementById("anime-title").innerText = anime.title || "";
+  document.getElementById("anime-synopsis").innerText = anime.synopsis || "Pas de synopsis disponible";
 
-    // **ICI ON N'AFFICHE PLUS LES EPISODES NI LA NOTE**
-    document.getElementById('anime-info').innerHTML = `
-        <p>Type: ${escapeHtml(anime.type || 'Inconnu')}</p>
-    `;
+  document.getElementById("anime-info").innerHTML = `
+    <p>Type: ${escapeHtml(anime.type || "Inconnu")}</p>
+  `;
 
-    document.getElementById('anime-movie-label').innerHTML = anime.type === "Movie" ? "<strong>C'est un Film</strong>" : "";
+  document.getElementById("anime-movie-label").innerHTML =
+    anime.type === "Movie" ? "<strong>C'est un Film</strong>" : "";
 
-    // Persos : anime ou manga selon _type
-    fetchCharacters(anime.mal_id, anime._type);
+  fetchCharacters(anime.mal_id, anime._type);
 
-    // Affiche le panneau détails
-    const animeDetails = document.getElementById('anime-details');
-    if (animeDetails) {
-        animeDetails.classList.add('show');
-        animeDetails.scrollIntoView({ behavior: 'smooth' });
-    }
+  const details = document.getElementById("anime-details");
+  details.classList.add("show");
+  details.scrollIntoView({ behavior: "smooth" });
 }
 
 /* ==================== Fermeture ==================== */
 function closeDetails() {
-    const animeDetails = document.getElementById('anime-details');
-    if (animeDetails) animeDetails.classList.remove('show');
-    const carousel = document.querySelector('#carousel');
-    if (carousel) carousel.style.display = 'flex';
-    const header = document.getElementById('header');
-    if (header) header.style.display = 'flex';
-    const searchContainer = document.getElementById('search-container');
-    if (searchContainer) searchContainer.style.display = 'block';
+  document.getElementById("anime-details")?.classList.remove("show");
+  document.querySelector("#carousel")?.style.setProperty("display", "flex");
+  document.getElementById("header")?.style.setProperty("display", "flex");
+  document.getElementById("search-container")?.style.setProperty("display", "block");
 }
 
-/* ==================== Recherche locale ==================== */
+/* ==================== Recherche ==================== */
 function searchAnime() {
-    const query = (document.getElementById('search-bar')?.value || '').toLowerCase().replace(/\s+/g, '');
-    const carousel = document.getElementById('carousel-inner-all');
-    if (!carousel) return;
-    const items = carousel.querySelectorAll('.anime-item');
-    let hasVisibleItems = false;
+  const query = (document.getElementById("search-bar")?.value || "")
+    .toLowerCase()
+    .replace(/\s+/g, "");
+  const carousel = document.getElementById("carousel-inner-all");
+  if (!carousel) return;
+  const items = carousel.querySelectorAll(".anime-item");
 
-    items.forEach(item => {
-        const title = (item.querySelector('p')?.innerText || '').toLowerCase().replace(/\s+/g, '');
-        const aliasElement = item.querySelectorAll('p')[1];
-        const aliases = aliasElement ? aliasElement.innerText.toLowerCase().replace(/\s+/g, '') : '';
-        if (title.includes(query) || aliases.includes(query)) {
-            item.style.display = 'block';
-            hasVisibleItems = true;
-        } else {
-            item.style.display = 'none';
-        }
-    });
+  let hasVisible = false;
+  items.forEach(item => {
+    const title = (item.querySelector("p")?.innerText || "").toLowerCase().replace(/\s+/g, "");
+    const alias = (item.querySelectorAll("p")[1]?.innerText || "").toLowerCase().replace(/\s+/g, "");
+    const visible = title.includes(query) || alias.includes(query);
+    item.style.display = visible ? "block" : "none";
+    if (visible) hasVisible = true;
+  });
 
-    const noResultsMessage = carousel.querySelector('.no-results-message');
-    if (noResultsMessage) noResultsMessage.style.display = hasVisibleItems ? 'none' : 'block';
+  let msg = carousel.querySelector(".no-results-message");
+  if (!msg) {
+    msg = document.createElement("p");
+    msg.className = "no-results-message";
+    msg.style.color = "red";
+    carousel.appendChild(msg);
+  }
+  msg.style.display = hasVisible ? "none" : "block";
+  msg.textContent = hasVisible ? "" : "Aucun résultat trouvé";
 }
 
 function clearSearch() {
-    const sb = document.getElementById('search-bar');
-    if (sb) sb.value = '';
-    searchAnime();
+  const sb = document.getElementById("search-bar");
+  if (sb) sb.value = "";
+  searchAnime();
 }
 
-/* ==================== Persos (anime ET manga) ==================== */
+/* ==================== Persos ==================== */
 async function fetchCharacters(id, type) {
-    try {
-        if (!id || !type) return;
-        const response = await fetch(`https://api.jikan.moe/v4/${type}/${id}/characters`);
-        const data = await response.json();
-        const characters = data.data || [];
+  try {
+    if (!id || !type) return;
+    const res = await fetch(`https://api.jikan.moe/v4/${type}/${id}/characters`);
+    const data = await res.json();
+    const chars = data.data || [];
+    const list = document.getElementById("anime-characters");
+    if (!list) return;
+    list.innerHTML = "";
 
-        const charactersList = document.getElementById('anime-characters');
-        if (!charactersList) return;
-        charactersList.innerHTML = '';
-
-        if (characters.length > 0) {
-            characters.slice(0, 4).forEach(c => {
-                const img = document.createElement('img');
-                img.src = c.character?.images?.jpg?.image_url || c.character?.images?.webp?.image_url || '';
-                img.alt = c.character?.name || '';
-                img.title = c.character?.name || '';
-                charactersList.appendChild(img);
-            });
-        } else {
-            charactersList.innerHTML = "<p>Aucun personnage trouvé</p>";
-        }
-    } catch (error) {
-        console.error("Erreur récupération persos:", error);
+    if (chars.length > 0) {
+      chars.slice(0, 4).forEach(c => {
+        const img = document.createElement("img");
+        img.src = c.character?.images?.jpg?.image_url || c.character?.images?.webp?.image_url || "";
+        img.alt = c.character?.name || "";
+        img.title = c.character?.name || "";
+        list.appendChild(img);
+      });
+    } else {
+      list.innerHTML = "<p>Aucun personnage trouvé</p>";
     }
+  } catch (err) {
+    console.error("Erreur persos:", err);
+  }
 }
 
-/* ==================== Helpers ==================== */
+/* ==================== Utils ==================== */
 function escapeHtml(str) {
-    return String(str || '').replace(/[&<>"']/g, s => ({
-        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-    })[s]);
+  return String(str || "").replace(/[&<>"']/g, s => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[s]);
 }
 
 /* ==================== Init ==================== */
 document.addEventListener("DOMContentLoaded", () => {
-    const genre = document.body.dataset.genre || null;
-    generateAnimeGallery(genre);
+  const genre = document.body.dataset.genre || null;
+  generateAnimeGallery(genre);
 });
