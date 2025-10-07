@@ -77,6 +77,7 @@ const myAnimeList = [
   { id: 56228, type: "anime" }, // Rekishi ni Nokoru Akujo ni Naru zo
   { id: 5231, type: "anime" }, // Inazuma Eleven
   { id: 185, type: "anime" }, // Initial D 
+  { id: 48926, type: "anime" }, // Komi can't communicate
   { id: 39017, type: "anime" }, // Kyokou Suiri
   { id: 36098, type: "anime" }, // Kimi no Suizou wo Tabetai
   { id: 56230, type: "anime" }, // Jiisan Baasan Wakagaeru
