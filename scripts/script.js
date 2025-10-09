@@ -129,6 +129,7 @@ function showAnimeDetails(anime) {
   document.getElementById("anime-info").innerHTML = `
     <p>Type: ${escapeHtml(anime.type || "Inconnu")}</p>
     <p>Genres: ${escapeHtml((anime.genres || []).join(", "))}</p>
+    <p>Thèmes: ${escapeHtml((anime.themes || []).join(", "))}</p>
   `;
 
   document.getElementById("anime-details").classList.add("show");
