@@ -178,3 +178,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   filteredAnimes = filterByGenre(allAnimes);
   renderPage(1, filteredAnimes);
 });
+
+
