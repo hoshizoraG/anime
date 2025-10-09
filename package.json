@@ -1,0 +1,23 @@
+{
+  "name": "anime",
+  "version": "1.0.0",
+  "description": "",
+  "main": "generateur-json.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoshizoraG/anime.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hoshizoraG/anime/issues"
+  },
+  "homepage": "https://github.com/hoshizoraG/anime#readme",
+  "dependencies": {
+    "node-fetch": "^2.7.0"
+  }
+}

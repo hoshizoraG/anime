@@ -7,11 +7,12 @@
     <link rel="stylesheet" href="styles/style.css">
     <link rel="icon" href="images/logo.png" type="image/png">
 </head>
-<body>
+<body data-genre="">
 <header id="header">
     <div id="logo">
         <img src="images/logo.png" alt="logo">
     </div>
+
     <div id="genre-menu">
         <a href="index.html"><u>Tous</u></a>
         <div class="dropdown">
@@ -23,7 +24,7 @@
                 <a href="pages/comedy.html">Comédie</a>
                 <a href="pages/horror.html">Horreur</a>
                 <a href="pages/drame.html">Drame</a>
-				<a href="pages/isekai.html">Isekai</a>
+                <a href="pages/isekai.html">Isekai</a>
                 <a href="pages/mecha.html">Mecha</a>
             </div>
         </div>
@@ -37,8 +38,10 @@
     </div>
 </header>
 
-<div id="main-container">
+<main id="main-container">
     <h1>Tous les Animes et Mangas</h1>
+
+    <!-- Galerie principale -->
     <div id="carousel" class="carousel">
         <div class="carousel-inner" id="carousel-inner-all">
             <div class="no-results-message" style="display: none;">
@@ -47,21 +50,30 @@
         </div>
     </div>
 
-    <div id="anime-details" class="hidden">
+    <!-- Pagination -->
+    <div id="pagination" class="pagination-controls">
+        <!-- Les boutons sont générés dynamiquement par le JS -->
+    </div>
+
+    <!-- Détails d'un anime -->
+    <section id="anime-details" class="hidden">
         <div id="anime-header">
-            <img id="anime-img" src="" alt="Anime image">
+            <img id="anime-img" src="" alt="Image de l'anime">
             <h1 id="anime-title"></h1>
         </div>
+
         <p id="anime-synopsis"></p>
         <div id="anime-extra-detail" style="white-space: pre-wrap;"></div>
-        <div id="anime-info"></div> 
+        <div id="anime-info"></div>
         <div id="anime-manga-label"></div>
         <div id="anime-movie-label"></div>
-        <h3>Personnages Principaux:</h3>
+
+        <h3>Personnages Principaux :</h3>
         <div id="anime-characters" class="character-list"></div>
-        <button onclick="closeDetails()">Retour à la galerie</button>
-    </div>
-</div>
+
+        <button id="back-button" onclick="closeDetails()">← Retour à la galerie</button>
+    </section>
+</main>
 
 <script src="scripts/script.js"></script>
 </body>
