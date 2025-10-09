@@ -7,7 +7,7 @@ let filteredAnimes = []; // animes filtrés par genre ou recherche
 /* ==================== Chargement du JSON ==================== */
 async function loadAllAnimes() {
   try {
-    const res = await fetch("../data/animes.json");
+    const res = await fetch("data/animes.json");
     allAnimes = await res.json();
   } catch (e) {
     console.error("Erreur chargement du JSON:", e);
