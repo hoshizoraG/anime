@@ -6,7 +6,7 @@ let filteredAnimes = []; // animes filtrés par genre ou recherche
 
 /* ==================== Chemin JSON ==================== */
 // Chemin absolu pour GitHub Pages
-const BASE_PATH = location.origin + "/anime/data/animes.json";
+const BASE_PATH = location.origin + "data/animes.json";
 
 /* ==================== Chargement du JSON ==================== */
 async function loadAllAnimes() {
