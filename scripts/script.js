@@ -11,7 +11,7 @@ const BASE_PATH = location.origin + location.pathname.replace(/\/[^/]*$/, "/");
 /* ==================== Chargement du JSON ==================== */
 async function loadAllAnimes() {
   try {
-    const res = await fetch("data/animes.json");
+    const res = await fetch("anime/data/animes.json");
 
     allAnimes = await res.json();
   } catch (e) {
@@ -166,4 +166,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   filteredAnimes = filterByGenre(allAnimes);
   renderPage(1, filteredAnimes);
 });
+
 
