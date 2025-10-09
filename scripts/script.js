@@ -6,13 +6,13 @@ let filteredAnimes = []; // animes filtrés par genre ou recherche
 
 /* ==================== Chemin JSON ==================== */
 // Chemin absolu pour GitHub Pages
-const BASE_PATH = location.origin + "data/animes.json";
 
 /* ==================== Chargement du JSON ==================== */
 async function loadAllAnimes() {
   try {
     // On utilise l'URL absolue pour éviter les problèmes de chemins
-    const res = await fetch(BASE_PATH);
+    const res = await fetch("https://hoshizorag.github.io/anime/data/animes.json")
+
 
     // Vérifie que la réponse est OK
     if (!res.ok) throw new Error(`Impossible de charger le JSON : ${res.status} ${res.statusText}`);
