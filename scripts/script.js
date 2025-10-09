@@ -4,10 +4,15 @@ let currentPage = 1;
 let allAnimes = [];
 let filteredAnimes = []; // animes filtrés par genre ou recherche
 
+/* ==================== Chemin JSON ==================== */
+// chemin absolu pour GitHub Pages
+const BASE_PATH = location.origin + location.pathname.replace(/\/[^/]*$/, "/");
+
 /* ==================== Chargement du JSON ==================== */
 async function loadAllAnimes() {
   try {
-    const res = await fetch("data/animes.json");
+    const res = await fetch("/data/animes.json");
+
     allAnimes = await res.json();
   } catch (e) {
     console.error("Erreur chargement du JSON:", e);
@@ -19,10 +24,10 @@ function getPageGenre() {
   return document.body.getAttribute("data-genre") || null;
 }
 
-/* ==================== Filtrage par genre ==================== */
+/* ==================== Filtrage par genre/thème ==================== */
 function filterByGenre(list) {
   const genre = getPageGenre();
-  if (!genre) return list; // pas de filtre si data-genre vide
+  if (!genre) return list;
   return list.filter(a => {
     const genres = (a.genres || []).map(g => g.toLowerCase());
     const themes = (a.themes || []).map(t => t.toLowerCase());
@@ -33,6 +38,7 @@ function filterByGenre(list) {
 /* ==================== Affichage d'une page ==================== */
 function renderPage(page = 1, list = filteredAnimes) {
   const carousel = document.getElementById("carousel-inner-all");
+  const paginationContainer = document.getElementById("pagination");
   carousel.innerHTML = "";
 
   const start = (page - 1) * PAGE_SIZE;
@@ -41,7 +47,7 @@ function renderPage(page = 1, list = filteredAnimes) {
 
   if (pageItems.length === 0) {
     carousel.innerHTML = "<p style='color:red;'>Aucun anime trouvé pour ce genre.</p>";
-    document.getElementById("pagination").innerHTML = "";
+    paginationContainer.innerHTML = "";
     return;
   }
 
@@ -63,6 +69,7 @@ function renderPage(page = 1, list = filteredAnimes) {
 function renderPaginationControls(page, list = filteredAnimes) {
   const container = document.getElementById("pagination");
   if (!container) return;
+
   container.innerHTML = "";
 
   const totalPages = Math.ceil(list.length / PAGE_SIZE);
@@ -85,7 +92,7 @@ function renderPaginationControls(page, list = filteredAnimes) {
   container.appendChild(next);
 }
 
-/* ==================== Changement de page ==================== */
+/* ==================== Changer de page ==================== */
 function changePage(newPage, list = filteredAnimes) {
   currentPage = newPage;
   renderPage(currentPage, list);
@@ -102,7 +109,7 @@ function searchAnime() {
     return title.includes(query) || alias.includes(query);
   });
 
-  filteredAnimes = filterByGenre(searchFiltered); // appliquer filtre genre
+  filteredAnimes = filterByGenre(searchFiltered);
   currentPage = 1;
   renderPage(currentPage, filteredAnimes);
 }
@@ -119,7 +126,7 @@ function showAnimeDetails(anime) {
   document.getElementById("search-container").style.display = "none";
   document.getElementById("header").style.display = "none";
   document.querySelector("#carousel").style.display = "none";
-  document.getElementById("pagination").style.display = "none"; // cacher la pagination
+  document.getElementById("pagination").style.display = "none"; // cache pagination
 
   document.getElementById("anime-img").src = anime.image;
   document.getElementById("anime-title").innerText = anime.title;
@@ -129,7 +136,6 @@ function showAnimeDetails(anime) {
   document.getElementById("anime-info").innerHTML = `
     <p>Type: ${escapeHtml(anime.type || "Inconnu")}</p>
     <p>Genres: ${escapeHtml((anime.genres || []).join(", "))}</p>
-    <p>Thèmes: ${escapeHtml((anime.themes || []).join(", "))}</p>
   `;
 
   document.getElementById("anime-details").classList.add("show");
@@ -140,7 +146,7 @@ function closeDetails() {
   document.querySelector("#carousel").style.display = "flex";
   document.getElementById("header").style.display = "flex";
   document.getElementById("search-container").style.display = "block";
-  document.getElementById("pagination").style.display = "flex"; // réafficher la pagination
+  document.getElementById("pagination").style.display = "flex"; // ré-affiche pagination
 }
 
 /* ==================== Utils ==================== */
@@ -157,6 +163,6 @@ function escapeHtml(str) {
 /* ==================== Initialisation ==================== */
 document.addEventListener("DOMContentLoaded", async () => {
   await loadAllAnimes();
-  filteredAnimes = filterByGenre(allAnimes); // filtre le genre dès le départ
+  filteredAnimes = filterByGenre(allAnimes);
   renderPage(1, filteredAnimes);
 });
