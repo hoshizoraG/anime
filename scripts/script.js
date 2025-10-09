@@ -30,7 +30,6 @@ function filterByGenre(list) {
   });
 }
 
-
 /* ==================== Affichage d'une page ==================== */
 function renderPage(page = 1, list = filteredAnimes) {
   const carousel = document.getElementById("carousel-inner-all");
@@ -86,6 +85,7 @@ function renderPaginationControls(page, list = filteredAnimes) {
   container.appendChild(next);
 }
 
+/* ==================== Changement de page ==================== */
 function changePage(newPage, list = filteredAnimes) {
   currentPage = newPage;
   renderPage(currentPage, list);
@@ -119,6 +119,7 @@ function showAnimeDetails(anime) {
   document.getElementById("search-container").style.display = "none";
   document.getElementById("header").style.display = "none";
   document.querySelector("#carousel").style.display = "none";
+  document.getElementById("pagination").style.display = "none"; // cacher la pagination
 
   document.getElementById("anime-img").src = anime.image;
   document.getElementById("anime-title").innerText = anime.title;
@@ -138,6 +139,7 @@ function closeDetails() {
   document.querySelector("#carousel").style.display = "flex";
   document.getElementById("header").style.display = "flex";
   document.getElementById("search-container").style.display = "block";
+  document.getElementById("pagination").style.display = "flex"; // réafficher la pagination
 }
 
 /* ==================== Utils ==================== */
