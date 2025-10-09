@@ -5,17 +5,30 @@ let allAnimes = [];
 let filteredAnimes = []; // animes filtrés par genre ou recherche
 
 /* ==================== Chemin JSON ==================== */
-// chemin absolu pour GitHub Pages
-const BASE_PATH = location.origin + location.pathname.replace(/\/[^/]*$/, "/");
+// Chemin absolu pour GitHub Pages
+const BASE_PATH = location.origin + "/anime/data/animes.json";
 
 /* ==================== Chargement du JSON ==================== */
 async function loadAllAnimes() {
   try {
-    const res = await fetch("/data/animes.json");
+    // On utilise l'URL absolue pour éviter les problèmes de chemins
+    const res = await fetch(BASE_PATH);
 
-    allAnimes = await res.json();
+    // Vérifie que la réponse est OK
+    if (!res.ok) throw new Error(`Impossible de charger le JSON : ${res.status} ${res.statusText}`);
+
+    // Affiche le texte brut pour debug si problème
+    const text = await res.text();
+    try {
+      allAnimes = JSON.parse(text);
+    } catch (e) {
+      throw new Error("JSON invalide : " + e.message);
+    }
+
   } catch (e) {
     console.error("Erreur chargement du JSON:", e);
+    const carousel = document.getElementById("carousel-inner-all");
+    if (carousel) carousel.innerHTML = "<p style='color:red;'>Impossible de charger la liste des animes.</p>";
   }
 }
 
@@ -47,7 +60,7 @@ function renderPage(page = 1, list = filteredAnimes) {
 
   if (pageItems.length === 0) {
     carousel.innerHTML = "<p style='color:red;'>Aucun anime trouvé pour ce genre.</p>";
-    paginationContainer.innerHTML = "";
+    if (paginationContainer) paginationContainer.innerHTML = "";
     return;
   }
 
@@ -71,7 +84,6 @@ function renderPaginationControls(page, list = filteredAnimes) {
   if (!container) return;
 
   container.innerHTML = "";
-
   const totalPages = Math.ceil(list.length / PAGE_SIZE);
 
   const prev = document.createElement("button");
