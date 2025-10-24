@@ -3154,5 +3154,38 @@
       "Music",
       "Parody"
     ]
+  },
+  {
+    "id": 37475,
+    "type": "anime",
+    "title": "Kishuku Gakkou no Juliet",
+    "title_english": "Juliet au pensionnat",
+    "title_japanese": "寄宿学校のジュリエット",
+    "image": "https://cdn.myanimelist.net/images/anime/1908/93416.jpg",
+    "synopsis": "We lay our scene in the fair Dahlia Academy, where two countries, both alike in dignity, come together; the 'Black Doggies' of the Eastern Nation of Touwa and 'White Cats' of the Principality of West have a longstanding feud. Romio Inuzuka and Juliet Persia, leaders of their respective dorms, seem to be bitter enemies.\n In reality, however, Romio and Juliet are hopelessly in love, but revealing their relationship would call upon the ire of all their comrades. They hide their love to maintain peace, but a clandestine relationship means they miss out on many of the activities couples get to do. As they grow closer together, Romio and Juliet must come to terms with the fact that keeping their relationship a secret may prove to be impossible.",
+    "genres": [
+       "Action",
+       "Comedy",
+       "Romance"
+    ],
+    "themes": [
+      "School"
+    ]
+  },
+  {
+    "id": 58811,
+    "type": "anime",
+    "title": "Tougen Anki",
+    "title_english": "Tougen Anki",
+    "title_japanese": "桃源暗鬼",
+    "image": "https://cdn.myanimelist.net/images/anime/1474/150666.jpg",
+    "synopsis": "Long ago, demon-like creatures known as Oni butchered humans and brought on destruction solely for their own delight. A lone man named Momotarou opposed these gruesome, near-invincible monsters, but the war against them was just beginning.\nThousands of years in the future, temperamental gun enthusiast Shiki Ichinose leads a carefree life. However, after his expulsion from school, everything changes. Shiki is suddenly attacked by a man and is rescued by his adoptive father, Tsuyoshi. As the two flee, Tsuyoshi reveals that Shiki is actually a descendant of the Oni, while both he and their pursuer are from the Momotarou lineage.\nThe two Momotarou soon clash in a fierce battle, and Tsuyoshi sacrifices himself to protect Shiki. Devastated, Shiki awakens to his Oni blood that grants him immense strength at the cost of going berserk. Although the enemy escapes, Naito Mudano, an Oni teacher at Rasetsu Academy, takes an interest in Shiki. Under Mudano's guidance, Shiki must learn to control the Oni blood—if he ever hopes to avenge his father.",
+    "genres": [
+       "Action",
+       "Fantasy"
+    ],
+    "themes": [
+      "Mythology"
+    ]
   }
 ]
