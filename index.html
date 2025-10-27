@@ -72,6 +72,26 @@
         <button id="back-button" onclick="closeDetails()">← Retour à la galerie</button>
     </section>
 </main>
+<button id="change-status-btn">Changer le status d'un anime</button>
+
+<!-- Fenêtre de sélection -->
+<div id="status-modal" class="modal hidden">
+    <div class="modal-content">
+        <span id="close-modal" class="close">&times;</span>
+        <h2>Changer le statut d'un anime</h2>
+        <label for="anime-select">Choisir un anime :</label>
+        <select id="anime-select"></select>
+
+        <label for="status-select">Choisir le statut :</label>
+        <select id="status-select">
+            <option value="En cours">En cours</option>
+            <option value="Fini">Fini</option>
+        </select>
+
+        <button id="save-status">Enregistrer</button>
+    </div>
+</div>
+
 
 <script src="scripts/script.js"></script>
 </body>
