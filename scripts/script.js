@@ -70,7 +70,6 @@ function renderPage(page = 1, list = filteredAnimes) {
     item.innerHTML = `
       <img src="${anime.image}" alt="${escapeHtml(anime.title)}">
       <p>${escapeHtml(anime.title)}</p>
-      <p>Status : ${escapeHtml(status)}</p>
     `;
     carousel.appendChild(item);
   });
