@@ -29,6 +29,14 @@
                 <a href="mecha.html">Mecha</a>
             </div>
         </div>
+        <div class="dropdown">
+            <a href="#"><u>Statut</u></a>
+            <div class="dropdown-content">
+                <a href="en-cours.html">En cours</a>
+                <a href="fini.html">Fini</a>
+                <a href="non-defini.html">Non défini</a>
+            </div>
+        </div>
         <a href="top.html">Mon top</a>
         <a href="https://anime-sama.fr/" target="_blank">Pour regarder</a>
     </div>
@@ -71,6 +79,21 @@
         <button onclick="closeDetails()">Retour à la galerie</button>
     </div>
 </main>
+<!-- Modal de changement de statut -->
+<div id="status-modal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close" onclick="closeStatusModal()">&times;</span>
+        <h2>Modifier le statut</h2>
+        <p id="modal-anime-title"></p>
+        <label for="status-select">Choisir le statut :</label>
+        <select id="status-select">
+            <option value="En cours">En cours</option>
+            <option value="Fini">Fini</option>
+            <option value="Non défini">Non défini</option>
+        </select>
+        <button onclick="saveAnimeStatus()">Enregistrer</button>
+    </div>
+</div>
 
 <script src="../scripts/script.js"></script>
 </body>

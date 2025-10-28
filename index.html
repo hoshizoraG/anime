@@ -12,7 +12,6 @@
     <div id="logo">
         <img src="images/logo.png" alt="logo">
     </div>
-
     <div id="genre-menu">
         <a href="index.html"><u>Tous</u></a>
         <div class="dropdown">
@@ -29,20 +28,24 @@
                 <a href="pages/mecha.html">Mecha</a>
             </div>
         </div>
+        <div class="dropdown">
+            <a href="#">Statut</a>
+            <div class="dropdown-content">
+                <a href="pages/en-cours.html">En cours</a>
+                <a href="pages/fini.html">Fini</a>
+                <a href="pages/non-defini.html">Non défini</a>
+            </div>
+        </div>
         <a href="pages/top.html">Mon top</a>
         <a href="https://anime-sama.fr/" target="_blank">Pour regarder</a>
     </div>
-    
     <div id="search-container">
         <input type="text" id="search-bar" placeholder="Rechercher un anime..." onkeyup="searchAnime()">
         <span id="clear-icon" onclick="clearSearch()">&#10006;</span>
     </div>
 </header>
-
 <main id="main-container">
     <h1>Tous les Animes et Mangas</h1>
-
-    <!-- Galerie principale -->
     <div id="carousel" class="carousel">
         <div class="carousel-inner" id="carousel-inner-all">
             <div class="no-results-message" style="display: none;">
@@ -50,48 +53,36 @@
             </div>
         </div>
     </div>
-
-    <!-- Pagination -->
-    <div id="pagination" class="pagination-controls">
-        <!-- Les boutons sont générés dynamiquement par le JS -->
-    </div>
-
-    <!-- Détails d'un anime -->
+    <div id="pagination" class="pagination-controls"></div>
     <section id="anime-details" class="hidden">
         <div id="anime-header">
             <img id="anime-img" src="" alt="Image de l'anime">
             <h1 id="anime-title"></h1>
         </div>
-
         <p id="anime-synopsis"></p>
         <div id="anime-extra-detail" style="white-space: pre-wrap;"></div>
         <div id="anime-info"></div>
         <div id="anime-manga-label"></div>
         <div id="anime-movie-label"></div>
-
         <button id="back-button" onclick="closeDetails()">← Retour à la galerie</button>
     </section>
 </main>
-<button id="change-status-btn">Changer le status d'un anime</button>
 
-<!-- Fenêtre de sélection -->
+<!-- Modal de changement de statut -->
 <div id="status-modal" class="modal hidden">
     <div class="modal-content">
-        <span id="close-modal" class="close">&times;</span>
-        <h2>Changer le statut d'un anime</h2>
-        <label for="anime-select">Choisir un anime :</label>
-        <select id="anime-select"></select>
-
+        <span class="close" onclick="closeStatusModal()">&times;</span>
+        <h2>Modifier le statut</h2>
+        <p id="modal-anime-title"></p>
         <label for="status-select">Choisir le statut :</label>
         <select id="status-select">
             <option value="En cours">En cours</option>
             <option value="Fini">Fini</option>
+            <option value="Non défini">Non défini</option>
         </select>
-
-        <button id="save-status">Enregistrer</button>
+        <button onclick="saveAnimeStatus()">Enregistrer</button>
     </div>
 </div>
-
 
 <script src="scripts/script.js"></script>
 </body>

@@ -2,10 +2,8 @@
 const PAGE_SIZE = 15;
 let currentPage = 1;
 let allAnimes = [];
-let filteredAnimes = []; // animes filtrés par genre ou recherche
-
-/* ==================== Chemin JSON ==================== */
-// Chemin absolu pour GitHub Pages
+let filteredAnimes = [];
+let currentAnimeForStatus = null; // Anime actuellement sélectionné pour changer le statut
 
 /* ==================== Chargement du JSON ==================== */
 async function loadAllAnimes() {
@@ -30,9 +28,13 @@ async function loadAllAnimes() {
   }
 }
 
-/* ==================== Récupérer le genre de la page ==================== */
+/* ==================== Récupérer le genre/statut de la page ==================== */
 function getPageGenre() {
   return document.body.getAttribute("data-genre") || null;
+}
+
+function getPageStatus() {
+  return document.body.getAttribute("data-status") || null;
 }
 
 /* ==================== Filtrage par genre/thème ==================== */
@@ -43,6 +45,16 @@ function filterByGenre(list) {
     const genres = (a.genres || []).map(g => g.toLowerCase());
     const themes = (a.themes || []).map(t => t.toLowerCase());
     return genres.includes(genre.toLowerCase()) || themes.includes(genre.toLowerCase());
+  });
+}
+
+/* ==================== Filtrage par statut ==================== */
+function filterByStatus(list) {
+  const status = getPageStatus();
+  if (!status) return list;
+  return list.filter(a => {
+    const savedStatus = localStorage.getItem(a.title) || "Non défini";
+    return savedStatus === status;
   });
 }
 
@@ -57,7 +69,7 @@ function renderPage(page = 1, list = filteredAnimes) {
   const pageItems = list.slice(start, end);
 
   if (pageItems.length === 0) {
-    carousel.innerHTML = "<p style='color:red;'>Aucun anime trouvé pour ce genre.</p>";
+    carousel.innerHTML = "<p style='color:red;'>Aucun anime trouvé.</p>";
     if (paginationContainer) paginationContainer.innerHTML = "";
     return;
   }
@@ -65,16 +77,82 @@ function renderPage(page = 1, list = filteredAnimes) {
   pageItems.forEach(anime => {
     const item = document.createElement("div");
     item.className = "anime-item";
-    item.onclick = () => showAnimeDetails(anime);
+    
     const status = localStorage.getItem(anime.title) || "Non défini";
+    
     item.innerHTML = `
       <img src="${anime.image}" alt="${escapeHtml(anime.title)}">
-      <p>${escapeHtml(anime.title)}</p>
+      <p class="anime-title">${escapeHtml(anime.title)}</p>
+      <div class="status-badge ${status.toLowerCase().replace(/\s+/g, '-')}">${escapeHtml(status)}</div>
+      <button class="change-status-btn" onclick="openStatusModal('${escapeHtml(anime.title)}'); event.stopPropagation();">
+        📝 Modifier
+      </button>
     `;
+    
+    // Clic sur l'item pour voir les détails
+    item.onclick = (e) => {
+      if (!e.target.classList.contains('change-status-btn')) {
+        showAnimeDetails(anime);
+      }
+    };
+    
     carousel.appendChild(item);
   });
 
   renderPaginationControls(page, list);
+}
+
+/* ==================== Modal de changement de statut ==================== */
+function openStatusModal(title) {
+  currentAnimeForStatus = title;
+  const modal = document.getElementById("status-modal");
+  const modalTitle = document.getElementById("modal-anime-title");
+  const currentStatus = localStorage.getItem(title) || "Non défini";
+  
+  modalTitle.textContent = title;
+  
+  // Pré-sélectionner le statut actuel
+  const statusSelect = document.getElementById("status-select");
+  statusSelect.value = currentStatus;
+  
+  modal.classList.remove("hidden");
+}
+
+function closeStatusModal() {
+  const modal = document.getElementById("status-modal");
+  modal.classList.add("hidden");
+  currentAnimeForStatus = null;
+}
+
+function saveAnimeStatus() {
+  if (!currentAnimeForStatus) return;
+  
+  const statusSelect = document.getElementById("status-select");
+  const newStatus = statusSelect.value;
+  
+  localStorage.setItem(currentAnimeForStatus, newStatus);
+  const animeObj = allAnimes.find(a => a.title === currentAnimeForStatus);
+  if(animeObj) animeObj.status = newStatus;
+  
+  // Réappliquer les filtres
+  let filtered = allAnimes;
+  filtered = filterByGenre(filtered);
+  filtered = filterByStatus(filtered);
+  
+  // Recherche active ?
+  const searchBar = document.getElementById("search-bar");
+  if (searchBar && searchBar.value.trim() !== "") {
+    const query = searchBar.value.toLowerCase().replace(/\s+/g, "");
+    filtered = filtered.filter(a => {
+      const titleMatch = (a.title || "").toLowerCase().replace(/\s+/g, "");
+      const alias = (a.title_english || a.title_japanese || "").toLowerCase().replace(/\s+/g, "");
+      return titleMatch.includes(query) || alias.includes(query);
+    });
+  }
+  
+  filteredAnimes = filtered;
+  renderPage(currentPage, filteredAnimes);
+  closeStatusModal();
 }
 
 /* ==================== Pagination ==================== */
@@ -120,7 +198,10 @@ function searchAnime() {
     return title.includes(query) || alias.includes(query);
   });
 
-  filteredAnimes = filterByGenre(searchFiltered);
+  searchFiltered = filterByGenre(searchFiltered);
+  searchFiltered = filterByStatus(searchFiltered);
+  
+  filteredAnimes = searchFiltered;
   currentPage = 1;
   renderPage(currentPage, filteredAnimes);
 }
@@ -128,6 +209,7 @@ function searchAnime() {
 function clearSearch() {
   document.getElementById("search-bar").value = "";
   filteredAnimes = filterByGenre(allAnimes);
+  filteredAnimes = filterByStatus(filteredAnimes);
   currentPage = 1;
   renderPage(currentPage, filteredAnimes);
 }
@@ -175,45 +257,18 @@ function escapeHtml(str) {
   })[s]);
 }
 
-/* ==================== Modal pour changer le statut ==================== */
-function setupStatusModal() {
-  const changeStatusBtn = document.getElementById("change-status-btn");
-  const statusModal = document.getElementById("status-modal");
-  const closeModal = document.getElementById("close-modal");
-  const animeSelect = document.getElementById("anime-select");
-  const statusSelect = document.getElementById("status-select");
-  const saveStatusBtn = document.getElementById("save-status");
-
-  changeStatusBtn.onclick = () => {
-    animeSelect.innerHTML = "";
-    allAnimes.forEach(a => {
-      const option = document.createElement("option");
-      const savedStatus = localStorage.getItem(a.title);
-      option.value = a.title;
-      option.innerText = a.title + (savedStatus ? ` (${savedStatus})` : "");
-      animeSelect.appendChild(option);
-    });
-    statusModal.classList.remove("hidden");
-  };
-
-  closeModal.onclick = () => statusModal.classList.add("hidden");
-
-  saveStatusBtn.onclick = () => {
-    const animeTitle = animeSelect.value;
-    const status = statusSelect.value;
-    localStorage.setItem(animeTitle, status);
-    const animeObj = allAnimes.find(a => a.title === animeTitle);
-    if(animeObj) animeObj.status = status;
-    alert(`Statut de "${animeTitle}" mis à jour : ${status}`);
-    statusModal.classList.add("hidden");
-    renderPage(currentPage, filteredAnimes); // rafraîchit la page pour afficher le statut
-  };
-}
-
 /* ==================== Initialisation ==================== */
 document.addEventListener("DOMContentLoaded", async () => {
   await loadAllAnimes();
   filteredAnimes = filterByGenre(allAnimes);
+  filteredAnimes = filterByStatus(filteredAnimes);
   renderPage(1, filteredAnimes);
-  setupStatusModal(); // initialise la modal
+  
+  // Fermer la modal si on clique en dehors
+  const modal = document.getElementById("status-modal");
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      closeStatusModal();
+    }
+  });
 });
