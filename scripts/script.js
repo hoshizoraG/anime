@@ -81,13 +81,18 @@ function renderPage(page = 1, list = filteredAnimes) {
     const status = localStorage.getItem(anime.title) || "Non défini";
     
     item.innerHTML = `
-      <img src="${anime.image}" alt="${escapeHtml(anime.title)}">
-      <p class="anime-title">${escapeHtml(anime.title)}</p>
-      <div class="status-badge ${status.toLowerCase().replace(/\s+/g, '-')}">${escapeHtml(status)}</div>
-      <button class="change-status-btn" onclick="openStatusModal('${escapeHtml(anime.title)}'); event.stopPropagation();">
-        📝 Modifier
-      </button>
-    `;
+  <img src="${anime.image}" alt="${escapeHtml(anime.title)}">
+  <p class="anime-title">${escapeHtml(anime.title)}</p>
+  <div class="status-badge ${status.toLowerCase().replace(/\s+/g, '-')}">${escapeHtml(status)}</div>
+  <button class="change-status-btn">📝 Modifier</button>
+`;
+// Ajout du gestionnaire d'événement pour le bouton "Modifier"
+const button = item.querySelector(".change-status-btn");
+button.addEventListener("click", (e) => {
+  e.stopPropagation(); // empêche le clic d’ouvrir les détails
+  openStatusModal(anime.title);
+});
+
     
     // Clic sur l'item pour voir les détails
     item.onclick = (e) => {
@@ -271,4 +276,5 @@ document.addEventListener("DOMContentLoaded", async () => {
       closeStatusModal();
     }
   });
+
 });
