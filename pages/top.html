@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Recos</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="icon" href="../images/logo.png" type="image/png">
+</head>
+<body>
+<header id="header">
+    <div id="logo">
+        <img src="../images/logo.png" alt="logo">
+    </div>
+    <div id="genre-menu">
+        <a href="../index.html">Tous</a>
+        <div class="dropdown">
+            <a href="#">Genre</a>
+            <div class="dropdown-content">
+                <a href="romance.html">Romance</a>
+                <a href="action.html">Action</a>
+                <a href="sport.html">Sport</a>
+                <a href="comedy.html">Comédie</a>
+                <a href="horror.html">Horreur</a>
+                <a href="ecchi.html">Ecchi</a>
+                <a href="drame.html">Drame</a>
+                <a href="manhwa.html">Manhwa</a>
+            </div>
+        </div>
+        <a href="recos.html">Mes recos</a>
+        <a href="top.html"><u>Mon top</u></a>
+        <a href="https://anime-sama.fr/" target="_blank">Pour regarder</a>
+    </div>
+</header>
+
+<div id="main-container">
+    <h1>Mon top Anime, Manga, Manhwa</h1>
+	<h2>Si vous voulez en savoir plus sur ces animes cherchez les dans ce site ;)</h2>
+    <div id="reco-container">
+		<div class="reco-item">
+            <img src="../images/86.jpg" alt="86 eighty six">
+            <p style="font-size: 20px"><u>86 eighty six</u></p>
+			<p>Meilleur anime</p>
+        </div>
+		<div class="reco-item">
+            <img src="../images/blue_box.jpg" alt="Blue Box">
+            <p style="font-size: 20px"><u>Blue box</u></p>
+        </div>
+        <div class="reco-item">
+            <img src="../images/link_click.jpg" alt="Link click">
+            <p style="font-size: 20px"><u>Link click</u></p>
+        </div>
+        <div class="reco-item">
+            <img src="../images/code_geass.jpg" alt="Code geass">
+            <p style="font-size: 20px"><u>Code geass</u></p>
+        </div>
+		<div class="reco-item">
+            <img src="../images/bunny.jpg" alt="Bunny girl senpai">
+            <p style="font-size: 20px"><u>Bunny girl senpai</u></p>
+        </div>
+		<div class="reco-item">
+            <img src="../images/clannad.jfif" alt="Clannad">
+            <p style="font-size: 20px"><u>Clannad</u></p>
+        </div>
+    </div>
+	<div id="anime-details" class="hidden">
+            <div id="anime-header">
+                <img id="anime-img" src="" alt="Anime image">
+                <h1 id="anime-title"></h1>
+            </div>
+            <p id="anime-synopsis"></p>
+			<div id="anime-extra-detail" style="white-space: pre-wrap;"></div>
+            <div id="anime-info"></div> 
+			<div id= "anime-manga-label"></div>
+            <div id="anime-movie-label"></div>
+            <h3>Personnages Principaux:</h3>
+            <div id="anime-characters" class="character-list"></div>
+            <button onclick="closeDetails()">Retour à la galerie</button>
+        </div>
+</div>
+<script src="../scripts/script.js"></script>
+</body>
+</html>

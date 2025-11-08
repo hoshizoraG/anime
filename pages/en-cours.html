@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animes en cours</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="icon" href="../images/logo.png" type="image/png">
+</head>
+<body data-genre="" data-status="En cours">
+<header id="header">
+    <div id="logo">
+        <a href="../index.html"><img src="../images/logo.png" alt="logo"></a>
+    </div>
+    <div id="genre-menu">
+        <a href="../index.html">Tous</a>
+        <div class="dropdown">
+            <a href="#">Genre</a>
+            <div class="dropdown-content">
+                <a href="romance.html">Romance</a>
+                <a href="action.html">Action</a>
+                <a href="fantasy.html">Fantasy</a>
+                <a href="sport.html">Sport</a>
+                <a href="comedy.html">Comédie</a>
+                <a href="horror.html">Horreur</a>
+                <a href="drame.html">Drame</a>
+                <a href="isekai.html">Isekai</a>
+                <a href="mecha.html">Mecha</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a href="#"><u>Statut</u></a>
+            <div class="dropdown-content">
+                <a href="en-cours.html">En cours</a>
+                <a href="fini.html">Fini</a>
+                <a href="non-defini.html">Non défini</a>
+            </div>
+        </div>
+        <a href="top.html">Mon top</a>
+        <a href="https://anime-sama.fr/" target="_blank">Pour regarder</a>
+    </div>
+    <div id="search-container">
+        <input type="text" id="search-bar" placeholder="Rechercher un anime..." onkeyup="searchAnime()">
+        <span id="clear-icon" onclick="clearSearch()">&#10006;</span>
+    </div>
+</header>
+<main id="main-container">
+    <h1>Animes en cours</h1>
+    <div id="carousel" class="carousel">
+        <div class="carousel-inner" id="carousel-inner-all">
+            <div class="no-results-message" style="display: none;">
+                <p>Aucun anime trouvé</p>
+            </div>
+        </div>
+    </div>
+    <div id="pagination" class="pagination-controls"></div>
+    <section id="anime-details" class="hidden">
+        <div id="anime-header">
+            <img id="anime-img" src="" alt="Image de l'anime">
+            <h1 id="anime-title"></h1>
+        </div>
+        <p id="anime-synopsis"></p>
+        <div id="anime-extra-detail" style="white-space: pre-wrap;"></div>
+        <div id="anime-info"></div>
+        <div id="anime-manga-label"></div>
+        <div id="anime-movie-label"></div>
+        <button id="back-button" onclick="closeDetails()">← Retour à la galerie</button>
+    </section>
+</main>
+
+<!-- Modal de changement de statut -->
+<div id="status-modal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close" onclick="closeStatusModal()">&times;</span>
+        <h2>Modifier le statut</h2>
+        <p id="modal-anime-title"></p>
+        <label for="status-select">Choisir le statut :</label>
+        <select id="status-select">
+            <option value="En cours">En cours</option>
+            <option value="Fini">Fini</option>
+            <option value="Non défini">Non défini</option>
+        </select>
+        <button onclick="saveAnimeStatus()">Enregistrer</button>
+    </div>
+</div>
+
+<script src="../scripts/script.js"></script>
+</body>
+</html>
