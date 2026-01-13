@@ -3219,5 +3219,54 @@
        "Romance"
     ],
     "themes": []
+  },
+  {
+    "id": 28121,
+    "type": "anime",
+    "title": "Dungeon ni Deai wo Motomeru no wa Machigatteiru Darou ka",
+    "title_english": "DanMachi: Familia Myth",
+    "title_japanese": "",
+    "image": "https://cdn.myanimelist.net/images/anime/1172/148981.jpg",
+    "synopsis": "Life in the bustling city of Orario is never dull, especially for Bell Cranel, a naive young man who hopes to become the greatest adventurer in the land. After a chance encounter with the lonely goddess, Hestia, his dreams become a little closer to reality. With her support, Bell embarks on a fantastic quest as he ventures deep within the city's monster-filled catacombs, known only as the 'Dungeon.' Death lurks around every corner in the cavernous depths of this terrifying labyrinth, and a mysterious power moves amidst the shadows.\nEven on the surface, survival is a hard-earned privilege. Indeed, nothing is ever certain in a world where gods and humans live and work together, especially when they often struggle to get along. One thing is for sure, though: a myriad of blunders, triumphs and friendships awaits the dauntlessly optimistic protagonist of this herculean tale.",
+    "genres": [
+        "Action", 
+        "Adventure",
+        "Fantasy"
+    ],
+    "themes": []
+  },
+  {
+    "id": 205,
+    "type": "anime",
+    "title": "Samurai Champloo",
+    "title_english": "",
+    "title_japanese": "",
+    "image": "https://cdn.myanimelist.net/images/anime/1370/135212.jpg",
+    "synopsis": "Fuu Kasumi is a young and clumsy waitress who spends her days peacefully working in a small teahouse. That is, until she accidentally spills a drink all over one of her customers! With a group of samurai now incessantly harassing her, Fuu desperately calls upon another samurai in the shop, Mugen, who quickly defeats them with his wild fighting technique, utilizing movements reminiscent to that of breakdancing. Unfortunately, Mugen decides to pick a fight with the unwilling ronin Jin, who wields a more precise and traditional style of swordfighting, and the latter proves to be a formidable opponent. The only problem is, they end up destroying the entire shop as well as accidentally killing the local magistrate's son.\nFor their crime, the two samurai are captured and set to be executed. However, they are rescued by Fuu, who hires the duo as her bodyguards. Though she no longer has a place to return to, the former waitress wishes to find a certain samurai who smells of sunflowers and enlists the help of the now exonerated pair to do so. Despite initially disapproving of this idea, the two eventually agree to assist the girl in her quest; thus, the trio embark upon an adventure to find this mysterious warrior—that is, if Fuu can keep Mugen and Jin from killing each other.\nSet in an alternate Edo Period of Japan, Samurai Champloo follows the journey of these three eccentric individuals in an epic quest full of action, comedy, and dynamic sword fighting, all set to the beat of a unique hip-hop infused soundtrack.",
+    "genres": [
+        "Action", 
+        "Adventure",
+        "Comedy"
+    ],
+    "themes": [
+        "Historical",
+        "Samurai"
+    ]
+  },
+
+{
+    "id": 51794,
+    "type": "anime",
+    "title": "Nanatsu no Taizai: Mokushiroku no Yonkishi",
+    "title_english": "The Seven Deadly Sins: Four Knights of the Apocalypse",
+    "title_japanese": "",
+    "image": "https://cdn.myanimelist.net/images/anime/1229/141256.jpg",
+    "synopsis": "Percival has always lived with his grandfather on God's Finger, a remote haven that sits high above the clouds. And though he loves the simple life, he secretly longs for adventure. But Percival's life is changed forever when an intruder—who shares a shocking connection with him—tears away everything he's ever known.\nWith nothing left to do but chase down the one who took everything from him, Percival sets out on his own. During his journey, the sheltered boy discovers that there are a lot of things he doesn't know about normal life. Luckily, he meets friends along the way who can help him get by—but how will they react when they find out about Percival's destiny... and how it's connected to the end of the world?",
+    "genres": [
+        "Action", 
+        "Adventure",
+        "Fantasy"
+    ],
+    "themes": []
   }
 ]
